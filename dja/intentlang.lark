@@ -1,0 +1,33 @@
+%import common.WS
+%ignore WS
+
+IPADDR: /[0-9]+(\.[0-9]+){3}(\/[0-9]+)?/
+IDENT: /[a-zA-Z_][a-zA-Z0-9_]*/
+NUMBER: /[0-9]+/
+
+start: stmt+
+
+stmt: allow_stmt
+    | block_stmt
+    | limit_stmt
+    | qos_stmt
+    | connectivity_stmt
+    | create_vlan_stmt
+    | delete_vlan_stmt
+    | route_stmt
+    | monitor_stmt
+    | backup_stmt
+
+allow_stmt: "allow" "tcp" "from" endpoint "to" endpoint
+block_stmt: "block" "icmp"
+limit_stmt: "limit" "bandwidth" NUMBER "Mbps" "for" host
+qos_stmt: "assign" "qos" "high" "to" "vlan" NUMBER
+connectivity_stmt: "ensure" "connectivity" "between" host "and" host
+create_vlan_stmt: "create" "vlan" NUMBER "name" IDENT
+delete_vlan_stmt: "delete" "vlan" NUMBER
+route_stmt: "set" "route" IPADDR "via" IPADDR
+monitor_stmt: "monitor" "latency" "between" host "and" host
+backup_stmt: "backup" "configuration" "now"
+
+host: IDENT | IPADDR
+endpoint: host
